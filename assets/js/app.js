@@ -21,11 +21,49 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
+import maplibregl from 'maplibre-gl';
+
+let Hooks = {}
+Hooks.MainMap = {
+  initMap() {
+    const mapCenter = [-121.78611, 45.25549]
+    var map = new maplibregl.Map({
+      container: 'map', // container id
+      style: {
+        'version': 8,
+        'sources': {
+            'raster-tiles': {
+                'type': 'raster',
+                'tiles': [
+                  'https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=db6bfeb1836840e9b95634fc96792a43'
+                ],
+                'tileSize': 256,
+              }
+            },
+            'layers': [
+              {
+                  'id': 'simple-tiles',
+                  'type': 'raster',
+                  'source': 'raster-tiles',
+                  'minzoom': 0,
+                  'maxzoom': 22
+              }
+          ]
+      },
+      center: mapCenter, // starting position
+      zoom: 8 // starting zoom
+  });
+  },
+
+  mounted() {
+    this.initMap();
+  }
+}
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  params: {_csrf_token: csrfToken}
+  params: {_csrf_token: csrfToken}, hooks: Hooks
 })
 
 // Show progress bar on live navigation and form submits
