@@ -18,6 +18,7 @@ defmodule ElixirTrailsWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/geojson", PageController, :geojson
   end
 
   # Other scopes may use custom stacks.

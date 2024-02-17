@@ -9,8 +9,10 @@ import Config
 
 config :elixir_trails,
   ecto_repos: [ElixirTrails.Repo],
-  generators: [timestamp_type: :utc_datetime],
-  types: GpxPhoenix.PostgresTypes
+  generators: [timestamp_type: :utc_datetime]
+
+config :elixir_trails, ElixirTrails.Repo,
+  types: ElixirTrails.PostgresTypes
 
 # Configures the endpoint
 config :elixir_trails, ElixirTrailsWeb.Endpoint,

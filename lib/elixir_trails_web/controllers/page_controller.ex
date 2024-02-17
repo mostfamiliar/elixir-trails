@@ -6,4 +6,10 @@ defmodule ElixirTrailsWeb.PageController do
     # so skip the default app layout.
     render(conn, :home, layout: false)
   end
+
+  def geojson(conn, _params) do
+    geojson = ElixirTrails.Tracks.get_geom_as_geojson!()
+
+    json(conn, geojson)
+  end
 end
