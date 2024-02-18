@@ -17,7 +17,7 @@ defmodule ElixirTrailsWeb.Router do
   scope "/", ElixirTrailsWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", TracksLive
     get "/geojson", PageController, :geojson
   end
 
