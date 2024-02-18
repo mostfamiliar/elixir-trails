@@ -26,8 +26,10 @@ import maplibregl from 'maplibre-gl';
 let Hooks = {}
 Hooks.MainMap = {
   initMap() {
+    const tracks_list = JSON.parse(this.el.dataset.list_tracks);
+    console.log(tracks_list)
     const mapCenter = [-121.78611, 45.25549]
-    var map = new maplibregl.Map({
+    const map = new maplibregl.Map({
       container: 'map', // container id
       style: {
         'version': 8,
@@ -52,7 +54,76 @@ Hooks.MainMap = {
       },
       center: mapCenter, // starting position
       zoom: 8 // starting zoom
-  });
+    });
+
+    console.log(tracks_list)
+    map.on('load', () => {
+      map.addSource('trails', {
+          'type': 'geojson',
+          'data': tracks_list,
+      });
+      map.addLayer({
+        'id': 'trails',
+        'type': 'line',
+        'source': 'trails',
+        'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        'paint': {
+            'line-color': '#556B2F',
+            'line-width': 3
+        }
+      });
+
+      tracks_list.forEach((track) => {
+        console.log(track)
+      })
+      // const marker = new maplibregl.Marker()
+      // .setLngLat([12.550343, 55.665957])
+      // .addTo(map);
+
+      // Add a layer showing the places.
+      map.addLayer({
+        'id': 'trail-desc',
+        'type': 'symbol',
+        'source': 'trails',
+        'layout': {
+            'icon-image': '{icon}_15',
+            'icon-overlap': 'always'
+        }
+    });
+
+    // When a click event occurs on a feature in the places layer, open a popup at the
+    // location of the feature, with description HTML from its properties.
+    map.on('click', 'trails', (e) => {
+        console.log(e)
+        const coordinates = Object.values(temp1.lngLat);
+        const description = e.features[0].properties.description;
+
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        new maplibregl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(description)
+            .addTo(map);
+    });
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    map.on('mouseenter', 'places', () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on('mouseleave', 'places', () => {
+        map.getCanvas().style.cursor = '';
+    });
+    });
   },
 
   mounted() {

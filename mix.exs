@@ -59,7 +59,8 @@ defmodule ElixirTrails.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
       {:geo, "~> 3.3"},
-      {:geo_postgis, "~> 3.3"}
+      {:geo_postgis, "~> 3.3"},
+      {:poison, "~> 5.0"}
     ]
   end
 

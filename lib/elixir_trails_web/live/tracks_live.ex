@@ -1,10 +1,9 @@
 defmodule ElixirTrailsWeb.TracksLive do
   use ElixirTrailsWeb, :live_view
-  alias ElixirTrailsWeb.Tracks
 
   def mount(_params, _session, socket) do
     {:ok,
     socket
-    |> assign(:foo, "bar")}
+    |> assign(:geojson, ElixirTrails.Tracks.get_geom_as_geojson!())}
   end
 end
